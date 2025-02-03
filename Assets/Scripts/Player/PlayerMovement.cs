@@ -42,6 +42,7 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] float currentSpeed;
     [SerializeField] PlayerState state;
+    [SerializeField] ThirdPersonCam.CameraStyle movementState;
 
     public void OnMove(InputValue value)
     {
@@ -89,12 +90,25 @@ public class PlayerMovement : MonoBehaviour
 
     void UpdateAnimator()
     {
-        characterAnimator.SetFloat("SpeedX", 0);
-        characterAnimator.SetFloat("SpeedZ", currentSpeed / runSpeed);
-        characterAnimator.SetFloat("SpeedY", Mathf.Abs(rb.linearVelocity.y));
-        characterAnimator.SetBool("IsGrounded", isGrounded);
-        characterAnimator.SetBool("WantToJump", isJumping);
-        characterAnimator.SetBool("IsMoving", currentSpeed > 0.1);
+        characterAnimator.SetBool("IsInCombat", isInCombat());
+        if (isInCombat())
+        {
+            characterAnimator.SetFloat("SpeedX", moveInputValue.x);
+            characterAnimator.SetFloat("SpeedZ", moveInputValue.y < -0.1 ? -1 : moveInputValue.y * currentSpeed / runSpeed);
+            characterAnimator.SetFloat("SpeedY", rb.linearVelocity.y);
+            characterAnimator.SetBool("IsGrounded", isGrounded);
+            characterAnimator.SetBool("WantToJump", isJumping);
+            characterAnimator.SetBool("IsMoving", currentSpeed > 0.1);
+        }
+        else if(movementState == ThirdPersonCam.CameraStyle.Basic)
+        {
+            characterAnimator.SetFloat("SpeedX", 0);
+            characterAnimator.SetFloat("SpeedZ", currentSpeed / runSpeed);
+            characterAnimator.SetFloat("SpeedY", Mathf.Abs(rb.linearVelocity.y));
+            characterAnimator.SetBool("IsGrounded", isGrounded);
+            characterAnimator.SetBool("WantToJump", isJumping);
+            characterAnimator.SetBool("IsMoving", currentSpeed > 0.1);
+        }
     }
 
     void Inputs()
@@ -173,6 +187,16 @@ public class PlayerMovement : MonoBehaviour
         exitingSlope = false;
     }
 
+    public bool isInCombat()
+    {
+        return movementState == ThirdPersonCam.CameraStyle.Combat;
+    }
+
+    public void SetMovementState(ThirdPersonCam.CameraStyle newState)
+    {
+        movementState = newState;
+    }
+
     private bool OnSlope()
     {
         if (Physics.Raycast(playerCharacter.transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.2f))
@@ -224,6 +248,11 @@ public class PlayerMovement : MonoBehaviour
 
         Gizmos.color = Color.green;
         Gizmos.DrawLine(rb.transform.position, rb.transform.position + Vector3.down * (playerHeight * 0.5f + 0.3f));
+    }
+
+    private void OnValidate()
+    {
+        SetMovementState(movementState);
     }
 
     public enum PlayerState
