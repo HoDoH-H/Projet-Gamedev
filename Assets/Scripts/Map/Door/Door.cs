@@ -40,8 +40,7 @@ public class Door : MonoBehaviour
     {
         if(doBreak && transform.parent != null)
         {
-            Debug.Log("Break");
-            gameObject.layer = LayerMask.NameToLayer("whatIsGround");
+            gameObject.layer = LayerMask.NameToLayer("levitatableObjects");
             rb.constraints = RigidbodyConstraints.None;
             rb.automaticInertiaTensor = true;
             transform.parent = null;
@@ -61,6 +60,7 @@ public class Door : MonoBehaviour
                 box.excludeLayers = 0;
             }
             
+            this.enabled = false;
         }
     }
 

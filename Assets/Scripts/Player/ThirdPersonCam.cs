@@ -73,11 +73,26 @@ public class ThirdPersonCam : MonoBehaviour
         currentStyle = style;
     }
 
+    public GameObject CheckIfLookingAtALayer(LayerMask layer)
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, 12.5f, layer))
+        {
+            return hit.collider.gameObject;
+        }
+        return null;
+    }
+
     private void OnValidate()
     {
         SwitchCameraStyle(currentStyle);
     }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(cam.transform.position, cam.transform.position + cam.transform.forward * 12.5f);
+    }
 
     public enum CameraStyle
     {

@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
     public Rigidbody rb;
     public CharacterGraphic playerCharacter;
     public Animator characterAnimator;
+    public ThirdPersonCam camController;
 
     [Header("Movement")]
     private float moveSpeed = 4.5f;
@@ -195,6 +196,7 @@ public class PlayerMovement : MonoBehaviour
     public void SetMovementState(ThirdPersonCam.CameraStyle newState)
     {
         movementState = newState;
+        camController.SwitchCameraStyle(newState);
     }
 
     private bool OnSlope()
