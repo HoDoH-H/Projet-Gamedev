@@ -1,10 +1,10 @@
+using System.Collections;
 using UnityEngine;
 
 public class Door : MonoBehaviour
 {
     [SerializeField] private Rigidbody rb;
     [SerializeField] private BoxCollider box;
-    [SerializeField] private MeshCollider col;
     [SerializeField] private float maxRotationToTheRight = 90f;
     [SerializeField] private float maxRotationToTheLeft = -90f;
     [SerializeField] private float maxRotationSpeedToAutoClose = 0.6f;
@@ -15,7 +15,7 @@ public class Door : MonoBehaviour
     private void Update()
     {
         ControlRotation();
-        Break(doBreak);
+        StartCoroutine(Break(doBreak));
     }
 
     void ControlRotation()
@@ -36,14 +36,31 @@ public class Door : MonoBehaviour
         }
     }
 
-    public void Break(bool doBreak = true)
+    public IEnumerator Break(bool doBreak = true)
     {
         if(doBreak && transform.parent != null)
         {
+            Debug.Log("Break");
+            gameObject.layer = LayerMask.NameToLayer("whatIsGround");
             rb.constraints = RigidbodyConstraints.None;
+            rb.automaticInertiaTensor = true;
             transform.parent = null;
             rb.automaticCenterOfMass = true;
-            col.excludeLayers = 0;
+            box.excludeLayers = 0;
+
+            Collider[] col = Physics.OverlapBox(transform.position, box.size / 2, transform.rotation, LayerMask.GetMask("whatIsWall"));
+            
+            if(col.Length != 0)
+            {
+                box.excludeLayers = LayerMask.GetMask("whatIsWall");
+                while (col.Length != 0)
+                {
+                    col = Physics.OverlapBox(transform.position, box.size / 2, transform.rotation, LayerMask.GetMask("whatIsWall"));
+                    yield return new WaitForSeconds(0.05f);
+                }
+                box.excludeLayers = 0;
+            }
+            
         }
     }
 
