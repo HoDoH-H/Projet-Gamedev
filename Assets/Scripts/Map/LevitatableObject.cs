@@ -39,6 +39,7 @@ public class LevitatableObject : MonoBehaviour
 
         Vector3 force = (dirToTarget * stiffness) - (rb.linearVelocity * damping);
         rb.AddForce(force, ForceMode.Force);
+        rb.angularVelocity = rb.angularVelocity * 0.9f;
     }
 
     private void OnDrawGizmos()
