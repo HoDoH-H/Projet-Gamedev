@@ -6,13 +6,13 @@ public class TelekinesisTarget : MonoBehaviour
     public Action levitatingObjectGottenTooFar;
     public LevitatableObject currentObject;
 
-    [SerializeField] private float maxDistance = 10f;
+    [SerializeField] private float maxDistance = 15f;
 
     private void Update()
     {
         if (currentObject != null)
         {
-            if (Vector3.Distance(transform.position, currentObject.transform.position) > maxDistance)
+            if (Vector3.Distance(transform.parent.position, currentObject.transform.position) > maxDistance)
             {
                 levitatingObjectGottenTooFar?.Invoke();
             }

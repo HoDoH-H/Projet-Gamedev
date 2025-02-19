@@ -20,8 +20,16 @@ public class ThirdPersonCam : MonoBehaviour
 
     public float rotationSpeed = 7;
     private bool isGamePaused;
+    private GameObject currentObject;
 
     public CameraStyle currentStyle;
+
+    public static ThirdPersonCam instance;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     public void OnMove(InputValue value)
     {
@@ -62,6 +70,23 @@ public class ThirdPersonCam : MonoBehaviour
 
             characterGraphic.transform.forward = dirToCombatLookAt.normalized;
         }
+
+        MakeItemGlowOnSight();
+    }
+
+    void MakeItemGlowOnSight()
+    {
+        GameObject oldObject = currentObject;
+        currentObject = CheckIfLookingAtALayer(Telekinesis.instance.levitatableLayer);
+
+        if (oldObject != null)
+            if(oldObject.transform.parent.GetComponent<LevitatableObject>() != null)
+                oldObject.transform.parent.GetComponent<LevitatableObject>().isGlowing = false;
+
+        if (currentObject != null)
+            if (currentObject.transform.parent.GetComponent<LevitatableObject>() != null)
+                if(currentObject.transform.parent.GetComponent<LevitatableObject>().isLevitating == false)
+                    currentObject.transform.parent.GetComponent<LevitatableObject>().isGlowing = true;
     }
 
     public void SwitchCameraStyle(CameraStyle style)

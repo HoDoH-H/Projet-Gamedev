@@ -15,6 +15,14 @@ public class Telekinesis : MonoBehaviour
     [SerializeField] private LevitatableObject currentObject;
     private bool doMoveToTarget = true;
 
+
+    public static Telekinesis instance;
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
     private void Start()
     {
         target.levitatingObjectGottenTooFar += ClearCurrentObject;
@@ -38,6 +46,7 @@ public class Telekinesis : MonoBehaviour
 
                 doMoveToTarget = true;
                 currentObject.rb.useGravity = false;
+                currentObject.isLevitating = true;
             }
             else
             {
@@ -56,6 +65,7 @@ public class Telekinesis : MonoBehaviour
             doMoveToTarget = !doMoveToTarget;
             currentObject.rb.useGravity = true;
             currentObject.rb.AddForce(cam.cam.transform.forward * throwForce, ForceMode.Impulse);
+            currentObject.isLevitating = false;
             SetCurrentObject(null);
         }
     }
@@ -65,6 +75,7 @@ public class Telekinesis : MonoBehaviour
         if(currentObject == null)
             return;
 
+        currentObject.isLevitating = false;
         currentObject.rb.useGravity = true;
         SetCurrentObject(null);
     }
