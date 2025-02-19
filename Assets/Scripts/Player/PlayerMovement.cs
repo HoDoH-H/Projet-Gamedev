@@ -45,6 +45,13 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] PlayerState state;
     [SerializeField] ThirdPersonCam.CameraStyle movementState;
 
+    public static PlayerMovement instance;
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
     public void OnMove(InputValue value)
     {
         moveInputValue = value.Get<Vector2>();

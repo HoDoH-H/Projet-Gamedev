@@ -1,3 +1,4 @@
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,6 +12,8 @@ public class ThirdPersonCam : MonoBehaviour
     public Rigidbody rb;
     public CombatLookAt combatLookAt;
     public CursorUI cursor;
+    public CinemachineOrbitalFollow basicOrbitalFollow;
+    public CinemachineOrbitalFollow combatOrbitalFollow;
 
     [Header("Camera Style")]
     public GameObject basicCamera;
@@ -34,6 +37,18 @@ public class ThirdPersonCam : MonoBehaviour
     public void OnMove(InputValue value)
     {
         moveInputValue = value.Get<Vector2>();
+    }
+
+    public void OnAim(InputValue value)
+    {
+        if(value.Get<float>() == 1)
+        {
+            PlayerMovement.instance.SetMovementState(CameraStyle.Combat);
+        }
+        else
+        {
+            PlayerMovement.instance.SetMovementState(CameraStyle.Basic);
+        }
     }
 
     public void OnPause(InputValue value)
@@ -91,6 +106,17 @@ public class ThirdPersonCam : MonoBehaviour
 
     public void SwitchCameraStyle(CameraStyle style)
     {
+        if(style == CameraStyle.Basic)
+        {
+            basicOrbitalFollow.HorizontalAxis.Value = combatOrbitalFollow.HorizontalAxis.Value;
+            basicOrbitalFollow.VerticalAxis.Value = combatOrbitalFollow.VerticalAxis.Value;
+        }
+        else if (style == CameraStyle.Combat)
+        {
+            combatOrbitalFollow.HorizontalAxis.Value = basicOrbitalFollow.HorizontalAxis.Value;
+            combatOrbitalFollow.VerticalAxis.Value = basicOrbitalFollow.VerticalAxis.Value;
+        }
+
         basicCamera.SetActive(style == CameraStyle.Basic);
         combatCamera.SetActive(style == CameraStyle.Combat);
         cursor.gameObject.SetActive(style == CameraStyle.Combat);
