@@ -131,7 +131,7 @@ public class ThirdPersonCam : MonoBehaviour
     public GameObject CheckIfLookingAtALayer(LayerMask layer)
     {
         RaycastHit hit;
-        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, 12.5f, layer))
+        if (Physics.Raycast(character.transform.position + new Vector3(0, 0.8f, 0), cam.transform.forward, out hit, 6.5f, layer))
         {
             return hit.collider.gameObject;
         }
@@ -146,7 +146,7 @@ public class ThirdPersonCam : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(cam.transform.position, cam.transform.position + cam.transform.forward * 12.5f);
+        Gizmos.DrawLine(character.transform.position + new Vector3(0, 0.8f, 0), character.transform.position + new Vector3(0, 0.8f, 0) + cam.transform.forward * 6.5f);
     }
 
     public enum CameraStyle

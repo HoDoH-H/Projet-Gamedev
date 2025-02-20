@@ -30,7 +30,7 @@ public class LevitatableObject : MonoBehaviour
         isGrounded = Physics.Raycast(transform.position, Vector3.down, groundDistance, whatIsGround);
         rb.linearDamping = isGrounded ? groundDrag : 0.5f;
 
-        SetGlowing(isGlowing ? 4 : 0);
+        SetGlowing(isGlowing ? 4 : 1);
     }
 
     public void MoveObjectTowardTarget(Transform target)
