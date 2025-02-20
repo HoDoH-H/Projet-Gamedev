@@ -17,6 +17,7 @@ public class PlayerMovement : MonoBehaviour
     public float walkSpeed = 4.5f;
     public float runSpeed = 9f;
     public float groundDrag = 5f;
+    public bool canMove = true;
 
     [Header("Jumping")]
     public float TimeBeforeJumping = 0.35f;
@@ -54,6 +55,12 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnMove(InputValue value)
     {
+        if (!canMove)
+        {
+            rb.linearVelocity = Vector3.zero;
+            return;
+        }
+
         moveInputValue = value.Get<Vector2>();
     }
 
@@ -129,6 +136,12 @@ public class PlayerMovement : MonoBehaviour
 
     void MovePlayer()
     {
+        if (!canMove)
+        {
+            rb.linearVelocity = Vector3.zero;
+            return;
+        }
+
         // Calculate move direction
         moveDirection = orientation.transform.forward * moveInputValue.y + orientation.transform.right * moveInputValue.x;
 
@@ -243,6 +256,13 @@ public class PlayerMovement : MonoBehaviour
         {
             state = PlayerState.Air;
         }
+    }
+
+    public IEnumerator DeactivateMovementFor(float time)
+    {
+        canMove = false;
+        yield return new WaitForSeconds(time);
+        canMove = true;
     }
 
     private void OnDrawGizmos()

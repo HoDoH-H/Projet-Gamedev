@@ -1,4 +1,5 @@
 using Unity.Cinemachine;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -36,6 +37,9 @@ public class ThirdPersonCam : MonoBehaviour
 
     public void OnMove(InputValue value)
     {
+        if (!PlayerMovement.instance.canMove)
+            return;
+
         moveInputValue = value.Get<Vector2>();
     }
 
