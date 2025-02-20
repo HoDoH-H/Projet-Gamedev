@@ -99,13 +99,13 @@ public class ThirdPersonCam : MonoBehaviour
         currentObject = CheckIfLookingAtALayer(Telekinesis.instance.levitatableLayer);
 
         if (oldObject != null)
-            if(oldObject.transform.parent.GetComponent<LevitatableObject>() != null)
-                oldObject.transform.parent.GetComponent<LevitatableObject>().isGlowing = false;
+            if(oldObject.transform.GetComponentInParent<LevitatableObject>() != null)
+                oldObject.transform.GetComponentInParent<LevitatableObject>().isGlowing = false;
 
         if (currentObject != null)
-            if (currentObject.transform.parent.GetComponent<LevitatableObject>() != null)
-                if(currentObject.transform.parent.GetComponent<LevitatableObject>().isLevitating == false)
-                    currentObject.transform.parent.GetComponent<LevitatableObject>().isGlowing = true;
+            if (currentObject.transform.GetComponentInParent<LevitatableObject>() != null)
+                if(currentObject.transform.GetComponentInParent<LevitatableObject>().isLevitating == false)
+                    currentObject.transform.GetComponentInParent<LevitatableObject>().isGlowing = true;
     }
 
     public void SwitchCameraStyle(CameraStyle style)
@@ -131,7 +131,7 @@ public class ThirdPersonCam : MonoBehaviour
     public GameObject CheckIfLookingAtALayer(LayerMask layer)
     {
         RaycastHit hit;
-        if (Physics.Raycast(character.transform.position + new Vector3(0, 0.8f, 0), cam.transform.forward, out hit, 6.5f, layer))
+        if (Physics.Raycast(character.transform.position + new Vector3(0, 0.8f, 0) + (currentStyle == CameraStyle.Combat ? cam.transform.right : Vector3.zero), cam.transform.forward, out hit, 6.5f, layer))
         {
             return hit.collider.gameObject;
         }
@@ -146,7 +146,7 @@ public class ThirdPersonCam : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(character.transform.position + new Vector3(0, 0.8f, 0), character.transform.position + new Vector3(0, 0.8f, 0) + cam.transform.forward * 6.5f);
+        Gizmos.DrawLine(character.transform.position + new Vector3(0, 0.8f, 0) + (currentStyle == CameraStyle.Combat ? cam.transform.right : Vector3.zero), character.transform.position + new Vector3(0, 0.8f, 0) + (currentStyle == CameraStyle.Combat ? cam.transform.right : Vector3.zero) + cam.transform.forward * 6.5f);
     }
 
     public enum CameraStyle

@@ -7,14 +7,9 @@ public class LevitatableObject : MonoBehaviour
     public Transform graphic;
 
     [Header("Settings")]
-    public float groundDrag = 10f;
-    public float groundDistance = 0.4f;
     public bool isGlowing = false;
     public bool isLevitating = false;
-    public LayerMask whatIsGround;
     private Vector3 centerOffset;
-
-    public bool isGrounded;
 
     private void Start()
     {
@@ -27,9 +22,6 @@ public class LevitatableObject : MonoBehaviour
 
     private void Update()
     {
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, groundDistance, whatIsGround);
-        rb.linearDamping = isGrounded ? groundDrag : 0.5f;
-
         SetGlowing(isGlowing ? 4 : 1);
     }
 
@@ -44,12 +36,6 @@ public class LevitatableObject : MonoBehaviour
         Vector3 force = (dirToTarget * stiffness) - (rb.linearVelocity * damping);
         rb.AddForce(force, ForceMode.Force);
         rb.angularVelocity = rb.angularVelocity * 0.9f;
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, transform.position + groundDistance * Vector3.down);
     }
 
     public void SetGlowing(float intensity = 0)

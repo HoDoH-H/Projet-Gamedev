@@ -69,13 +69,30 @@ public class Telekinesis : MonoBehaviour
 
     IEnumerator Throw()
     {
-        yield return new WaitForSeconds(0.5f);
+        Vector3 basePos = target.transform.localPosition;
+        Vector3 targetPos = new Vector3(0, basePos.y, Mathf.Abs(basePos.x));
 
+        float time = 0;
+        while (time < 0.45f)
+        {
+            float t = time / 0.45f;
+            target.transform.localPosition = new Vector3(Mathf.Lerp(basePos.x, targetPos.x, t), targetPos.y, Mathf.Lerp(basePos.z, targetPos.z, t));
+            time += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        yield return new WaitForSeconds(0.15f);
+
+        target.transform.localPosition = targetPos;
         doMoveToTarget = !doMoveToTarget;
         currentObject.rb.useGravity = true;
-        currentObject.rb.AddForce(cam.cam.transform.forward * throwForce, ForceMode.Impulse);
         currentObject.isLevitating = false;
+        currentObject.rb.linearVelocity = Vector3.zero;
+        yield return new WaitForEndOfFrame();
+
+        currentObject.rb.AddForce(cam.cam.transform.forward * throwForce, ForceMode.Impulse);
         SetCurrentObject(null);
+
+        target.transform.localPosition = basePos;
     }
 
     IEnumerator Take(LevitatableObject obj)

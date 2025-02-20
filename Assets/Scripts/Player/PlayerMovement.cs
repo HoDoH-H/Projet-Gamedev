@@ -84,7 +84,7 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         // Check if player is grounded
-        isGrounded = Physics.Raycast(rb.transform.position, Vector3.down, playerHeight * 0.5f + groundDistance, whatIsGround);
+        isGrounded = Physics.Raycast(rb.transform.position, Vector3.down, playerHeight * 0.5f + groundDistance, whatIsGround) || OnSlope();
 
         Inputs();
         SpeedControl();
@@ -221,7 +221,7 @@ public class PlayerMovement : MonoBehaviour
 
     private bool OnSlope()
     {
-        if (Physics.Raycast(playerCharacter.transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.2f))
+        if (Physics.Raycast(playerCharacter.transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.4f))
         {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
             return angle < maxSlopeAngle && angle != 0;
@@ -276,7 +276,7 @@ public class PlayerMovement : MonoBehaviour
 
 
         Gizmos.color = Color.green;
-        Gizmos.DrawLine(rb.transform.position, rb.transform.position + Vector3.down * (playerHeight * 0.5f + 0.3f));
+        Gizmos.DrawLine(rb.transform.position, rb.transform.position + Vector3.down * (playerHeight * 0.5f + 0.4f));
     }
 
     private void OnValidate()
